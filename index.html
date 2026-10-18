@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+</html><!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -6,8 +6,6 @@
   <title>فيتا | Vita</title>
   <meta name="theme-color" content="#667eea">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="فيتا">
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
@@ -32,9 +30,12 @@
     .btn-success { background: #27ae60 !important; }
     .btn-secondary { background: #95a5a6 !important; }
     .hidden { display: none !important; }
+    
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-    .top-bar h2 { margin: 0; font-size: 20px; text-align: right; }
-    .top-bar button { width: auto; padding: 8px 15px; font-size: 13px; margin: 0; }
+    .top-bar h2 { margin: 0; font-size: 18px; text-align: right; }
+    .top-bar div { display: flex; gap: 5px; }
+    .top-bar button { width: auto; padding: 8px 10px; font-size: 12px; margin: 0; }
+    
     .error-msg { color: #e74c3c; font-size: 13px; margin-bottom: 10px; text-align: center; min-height: 18px; }
     .success-msg { color: #27ae60; font-size: 14px; margin-bottom: 10px; text-align: center; font-weight: bold; min-height: 18px; }
     .price-tag { color: #27ae60; font-weight: bold; font-size: 16px; }
@@ -64,6 +65,11 @@
 
     .search-container { display: flex; gap: 10px; margin-bottom: 15px; }
     .search-container input { margin-bottom: 0; flex: 1; }
+
+    .terms-content { font-size: 14px; line-height: 1.8; color: #444; }
+    .terms-content h3 { color: #2c3e50; margin-top: 15px; margin-bottom: 5px; }
+    .footer-links { text-align: center; font-size: 12px; margin-top: 20px; }
+    .footer-links a { color: #3498db; cursor: pointer; text-decoration: underline; margin: 0 5px; }
   </style>
 </head>
 <body>
@@ -84,7 +90,6 @@
     </div>
   </div>
 
-  <!-- مودال شرح التطبيق -->
   <div id="faq-modal" class="modal hidden">
     <div class="modal-content" style="text-align: right;">
       <h3 style="color: #2980b9;">💡 كيف يعمل تطبيق فيتا؟</h3>
@@ -108,6 +113,11 @@
     <button id="browse-guest-btn" style="background: #ecf0f1; color: #333; margin-top: 15px; border: 1px solid #bdc3c7;">👀 تصفح الإعلانات كزائر</button>
     <button id="install-app-btn">📲 تثبيت التطبيق على الموبايل</button>
     <button onclick="document.getElementById('faq-modal').classList.remove('hidden')" style="background: none; color: #3498db; border: 1px solid #3498db; margin-top: 10px;">❓ كيف يعمل التطبيق؟</button>
+    
+    <div class="footer-links">
+      <a onclick="showView('privacy')">سياسة الخصوصية</a> | 
+      <a onclick="showView('terms')">شروط الاستخدام</a>
+    </div>
   </div>
 
   <div id="view-role" class="container view hidden">
@@ -121,7 +131,10 @@
   <div id="view-owner" class="container view hidden">
     <div class="top-bar">
       <h2>🏍️ لوحة المالك</h2>
-      <button onclick="logout()" style="background:#e74c3c;">خروج</button>
+      <div>
+        <button onclick="loadProfile()" style="background:#3498db;">👤 حسابي</button>
+        <button onclick="logout()" style="background:#e74c3c;">خروج</button>
+      </div>
     </div>
 
     <h3>نشر موتسيكل للإيجار</h3>
@@ -178,12 +191,12 @@
     <div class="top-bar">
       <h2>🏍️ الإعلانات</h2>
       <div>
+        <button onclick="loadProfile()" style="background:#3498db; display:none;" id="profile-btn-renter">👤 حسابي</button>
         <button id="logout-renter-btn" onclick="logout()" style="background:#e74c3c; display:none;">خروج</button>
-        <button id="login-renter-btn" onclick="showView('login')" style="background:#3498db; display:none;">تسجيل الدخول</button>
+        <button id="login-renter-btn" onclick="showView('login')" style="background:#3498db; display:none;">دخول</button>
       </div>
     </div>
 
-    <!-- شريط البحث الجديد -->
     <div class="search-container">
       <input type="text" id="r-search-input" placeholder="ابحث باسم الموتسيكل...">
     </div>
@@ -204,12 +217,26 @@
     <button id="back-to-owner" class="btn-secondary hidden" style="margin-top:20px;" onclick="showView('owner')">رجوع للوحة المالك</button>
   </div>
 
+  <div id="view-profile" class="container view hidden">
+    <div class="top-bar">
+      <h2>👤 حسابي</h2>
+      <button onclick="goBackFromProfile()" style="background:#95a5a6;">رجوع</button>
+    </div>
+    <h3>تعديل البيانات الشخصية</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:15px;">هذه البيانات تظهر لك فقط ولا يراها المستخدمون الآخرون.</p>
+    <input type="email" id="p-email" disabled style="background:#eee; color:#999;">
+    <input type="text" id="p-name" placeholder="الاسم بالكامل">
+    <input type="tel" id="p-phone" placeholder="رقم الموبايل">
+    <p id="p-msg" class="success-msg"></p>
+    <button onclick="saveProfile()" style="background:#27ae60;">حفظ التعديلات</button>
+  </div>
+
   <div id="view-admin" class="container view hidden">
     <div class="top-bar">
       <h2>🛠️ لوحة الإدارة</h2>
       <button onclick="logout()" style="background:#e74c3c;">خروج</button>
     </div>
-    <p style="text-align:center; color:#e74c3c; font-weight:bold; margin-bottom:15px;">الإعلانات اللي محتاجة تفعيل (بعد ما تتأكد من الدفع):</p>
+    <p style="text-align:center; color:#e74c3c; font-weight:bold; margin-bottom:15px;">الإعلانات اللي محتاجة تفعيل:</p>
     <div id="pending-listings-container"><p style="text-align:center;">جاري التحميل...</p></div>
     <button class="btn-secondary" onclick="showView('owner')" style="margin-top:20px;">رجوع للوحة المالك</button>
   </div>
@@ -222,21 +249,43 @@
     <div id="listing-details"><p style="text-align:center;">جاري التحميل...</p></div>
   </div>
 
+  <div id="view-privacy" class="container view hidden">
+    <div class="top-bar">
+      <h2>🔒 سياسة الخصوصية</h2>
+      <button onclick="goBackFromLegal()" style="background:#95a5a6;">رجوع</button>
+    </div>
+    <div class="terms-content">
+      <p>نحن في تطبيق "فيتا" نولي أهمية قصوى لخصوصية مستخدمينا.</p>
+      <h3>1. جمع البيانات</h3>
+      <p>نقوم بجمع البريد الإلكتروني ورقم الهاتف فقط لغرض تسهيل التواصل بين المالك والمستأجر وتأمين الحساب.</p>
+      <h3>2. استخدام البيانات</h3>
+      <p>لا يتم مشاركة بياناتك أو بيعها لأي طرف ثالث. أرقام التواصل الخاصة بالمالك تظهر فقط للمستأجرين المسجلين بهدف إتمام عملية الإيجار.</p>
+      <h3>3. الأمان</h3>
+      <p>نستخدم أنظمة حماية متطورة (Firebase) لتأمين بياناتك ضد الاختراق أو الوصول غير المصرح به.</p>
+    </div>
+  </div>
+
+  <div id="view-terms" class="container view hidden">
+    <div class="top-bar">
+      <h2>📄 شروط الاستخدام</h2>
+      <button onclick="goBackFromLegal()" style="background:#95a5a6;">رجوع</button>
+    </div>
+    <div class="terms-content">
+      <p>مرحباً بك في تطبيق "فيتا". باستخدامك للتطبيق، فإنك توافق على الشروط التالية:</p>
+      <h3>1. دور التطبيق</h3>
+      <p>التطبيق يعمل كوسيط عرض وإعلانات فقط. الاتفاقات المالية، توقيع إيصالات الأمانة، وتسليم الموتسيكل تتم مباشرة بين المالك والمستأجر.</p>
+      <h3>2. المسؤولية</h3>
+      <p>التطبيق غير مسؤول عن أي نزاعات، نصب، أو أضرار تلحق بالموتسيكل أو الأطراف. ننصح دائماً بتوقيع إيصال أمانة موثق.</p>
+      <h3>3. الاشتراكات</h3>
+      <p>رسوم تفعيل الإعلانات (50 جنيه) غير قابلة للاسترداد بمجرد تفعيل الإعلان.</p>
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <script>
-    const manifest = {
-      name: "فيتا | Vita", short_name: "فيتا", description: "أول منصة لإيجار الموتسيكلات في مصر",
-      start_url: "./index.html", display: "standalone", background_color: "#ffffff", theme_color: "#667eea",
-      icons: [{ src: "https://cdn-icons-png.flaticon.com/512/2830/2830284.png", sizes: "192x192", type: "image/png" }, { src: "https://cdn-icons-png.flaticon.com/512/2830/2830284.png", sizes: "512x512", type: "image/png" }]
-    };
-    const manifestLink = document.createElement('link');
-    manifestLink.rel = 'manifest';
-    manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
-    document.head.appendChild(manifestLink);
-
     const firebaseConfig = {
       apiKey: "AIzaSyBt1CDr7vuW9t-qKaGLORBTmZ3UEhWNvG4",
       authDomain: "vita-app-55740.firebaseapp.com",
@@ -270,14 +319,15 @@
         if (currentUser) {
           document.getElementById('logout-renter-btn').style.display = 'inline-block';
           document.getElementById('login-renter-btn').style.display = 'none';
+          document.getElementById('profile-btn-renter').style.display = 'inline-block';
         } else {
           document.getElementById('logout-renter-btn').style.display = 'none';
           document.getElementById('login-renter-btn').style.display = 'inline-block';
+          document.getElementById('profile-btn-renter').style.display = 'none';
         }
         loadListings();
       }
-
-      if (name === 'admin') { loadAdminListings(); }
+      if (name === 'admin') loadAdminListings();
     }
 
     function logout() { auth.signOut(); }
@@ -312,10 +362,10 @@
       }
     });
 
-    const loginMsg = document.getElementById('login-msg');
     document.getElementById('login-btn').addEventListener('click', async () => {
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
+      const loginMsg = document.getElementById('login-msg');
       loginMsg.textContent = '';
       if (!email || !password) { loginMsg.textContent = 'اكتب الإيميل والباسورد'; return; }
       try { await auth.signInWithEmailAndPassword(email, password); } catch (e) { loginMsg.textContent = 'خطأ: ' + (e.message || 'بيانات غير صحيحة'); }
@@ -324,6 +374,7 @@
     document.getElementById('signup-btn').addEventListener('click', async () => {
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
+      const loginMsg = document.getElementById('login-msg');
       loginMsg.textContent = '';
       if (!email || !password) { loginMsg.textContent = 'اكتب الإيميل والباسورد'; return; }
       if (password.length < 6) { loginMsg.textContent = 'الباسورد 6 حروف على الأقل'; return; }
@@ -343,6 +394,35 @@
       showView(role === 'owner' ? 'owner' : 'renter');
     }
 
+    async function loadProfile() {
+      document.getElementById('p-email').value = currentUser.email;
+      document.getElementById('p-msg').textContent = '';
+      try {
+        const snap = await db.collection('profiles').doc(currentUser.uid).get();
+        if (snap.exists) {
+          const data = snap.data();
+          document.getElementById('p-name').value = data.name || '';
+          document.getElementById('p-phone').value = data.phone || '';
+        }
+      } catch (e) { console.log(e); }
+      showView('profile');
+    }
+
+    async function saveProfile() {
+      const name = document.getElementById('p-name').value.trim();
+      const phone = document.getElementById('p-phone').value.trim();
+      const msg = document.getElementById('p-msg');
+      if (!name || !phone) { msg.style.color = '#e74c3c'; msg.textContent = 'اكتب الاسم ورقم الموبايل'; return; }
+      msg.style.color = '#27ae60'; msg.textContent = 'جاري الحفظ...';
+      try {
+        await db.collection('profiles').doc(currentUser.uid).update({ name, phone });
+        msg.textContent = '✅ تم حفظ البيانات بنجاح!';
+      } catch (e) { msg.style.color = '#e74c3c'; msg.textContent = 'خطأ: ' + e.message; }
+    }
+
+    function goBackFromProfile() { showView(currentRole === 'owner' ? 'owner' : 'renter'); }
+    function goBackFromLegal() { showView('login'); }
+
     async function uploadImage(file) {
       const formData = new FormData();
       formData.append('image', file);
@@ -353,7 +433,6 @@
     }
 
     let tempListingData = null;
-
     document.getElementById('publish-btn').addEventListener('click', async () => {
       const msg = document.getElementById('o-msg');
       msg.textContent = '';
@@ -397,7 +476,7 @@
           contactPhone: tempListingData.contactPhone, whatsapp: tempListingData.whatsapp, motoName: tempListingData.motoName,
           plate: tempListingData.plate, governorate: tempListingData.gov, rentalType: tempListingData.rentalType,
           price: tempListingData.price, amanaValue: tempListingData.amanaValue, guarantees: tempListingData.guarantees,
-          description: tempListingData.desc, imageUrl: imageUrl, status: 'pending', viewsCount: 0, // عداد المشاهدات
+          description: tempListingData.desc, imageUrl: imageUrl, status: 'pending', viewsCount: 0,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -427,7 +506,7 @@
 
         container.innerHTML = listings.map(l => {
           const statusBadge = l.status === 'active' ? '<span style="background:#27ae60; color:white; padding:3px 8px; border-radius:5px; font-size:11px;">نشط</span>' : '<span style="background:#e67e22; color:white; padding:3px 8px; border-radius:5px; font-size:11px;">قيد التفعيل</span>';
-          const views = l.viewsCount || 0; // عرض عدد المشاهدات
+          const views = l.viewsCount || 0;
           return `
             <div class="card" style="padding:12px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -452,7 +531,7 @@
     async function loadListings() {
       const container = document.getElementById('listings-container');
       const gov = document.getElementById('r-filter-gov').value;
-      const searchTerm = document.getElementById('r-search-input').value.trim().toLowerCase(); // قراءة نص البحث
+      const searchTerm = document.getElementById('r-search-input').value.trim().toLowerCase();
       
       container.innerHTML = '<p style="text-align:center;">جاري التحميل...</p>';
       try {
@@ -460,7 +539,6 @@
         let listings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         
         if (gov) listings = listings.filter(l => l.governorate === gov);
-        // فلترة البحث
         if (searchTerm) listings = listings.filter(l => l.motoName && l.motoName.toLowerCase().includes(searchTerm));
         
         listings.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
@@ -479,7 +557,6 @@
       } catch (e) { container.innerHTML = '<p style="color:#e74c3c; text-align:center;">خطأ: ' + e.message + '</p>'; }
     }
 
-    // إضافة مستمعين للبحث والفلترة
     document.getElementById('r-filter-gov').addEventListener('change', loadListings);
     document.getElementById('r-search-input').addEventListener('input', loadListings);
 
@@ -497,8 +574,7 @@
         if (!doc.exists) { container.innerHTML = '<p style="color:#e74c3c; text-align:center;">الإعلان غير موجود</p>'; return; }
         const l = doc.data();
         
-        // زيادة عداد المشاهدات
-        try { await docRef.update({ viewsCount: firebase.firestore.FieldValue.increment(1) }); } catch (err) { console.log("Views update error:", err); }
+        try { await docRef.update({ viewsCount: firebase.firestore.FieldValue.increment(1) }); } catch (err) { console.log("Views error:", err); }
 
         const safeOwnerName = l.ownerName || 'مالك';
         const safeAmanaValue = l.amanaValue ? `${l.amanaValue} جنيه` : 'غير محدد (اتفق مع المالك)';
@@ -575,6 +651,16 @@
         loadAdminListings();
       } catch (e) { alert('خطأ: ' + e.message); }
     }
+
+    const manifest = {
+      name: "فيتا | Vita", short_name: "فيتا", description: "أول منصة لإيجار الموتسيكلات في مصر",
+      start_url: "./index.html", display: "standalone", background_color: "#ffffff", theme_color: "#667eea",
+      icons: [{ src: "https://cdn-icons-png.flaticon.com/512/2830/2830284.png", sizes: "192x192", type: "image/png" }, { src: "https://cdn-icons-png.flaticon.com/512/2830/2830284.png", sizes: "512x512", type: "image/png" }]
+    };
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+    document.head.appendChild(manifestLink);
 
     let deferredPrompt; const installBtn = document.getElementById('install-app-btn');
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
