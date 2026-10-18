@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فيتا | Vita</title>
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="فيتا">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
+    .container { background: white; padding: 30px 20px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); width: 100%; max-width: 500px; margin: 0 auto; }
+    h1 { font-size: 28px; text-align: center; margin-bottom: 10px; }
+    h2 { font-size: 22px; text-align: center; margin-bottom: 20px; }
+    h3 { font-size: 17px; margin-bottom: 10px; color: #333; }
+    p { color: #666; margin-bottom: 12px; line-height: 1.6; }
+    input, select, textarea { width: 100%; padding: 12px 15px; margin-bottom: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; font-family: inherit; background: #fafafa; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #667eea; background: white; }
+    textarea { min-height: 80px; resize: vertical; }
+    button { width: 100%; padding: 13px; margin-bottom: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #eee; }
+    .card img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+    .card a, .btn { display: inline-block; margin-top: 10px; padding: 8px 15px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; font-size: 14px; border: none; cursor: pointer; text-align: center; }
+    .btn-whatsapp { background: #25D366 !important; }
+    .btn-call { background: #3498db !important; }
+    .btn-danger { background: #e74c3c !important; }
+    .btn-success { background: #27ae60 !important; }
+    .btn-secondary { background: #95a5a6 !important; }
+    .hidden { display: none !important; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+    .top-bar h2 { margin: 0; font-size: 20px; text-align: right; }
+    .top-bar button { width: auto; padding: 8px 15px; font-size: 13px; margin: 0; }
+    .error-msg { color: #e74c3c; font-size: 13px; margin-bottom: 10px; text-align: center; min-height: 18px; }
+    .success-msg { color: #27ae60; font-size: 14px; margin-bottom: 10px; text-align: center; font-weight: bold; min-height: 18px; }
+    .price-tag { color: #27ae60; font-weight: bold; font-size: 16px; }
+    .section-title { font-size: 16px; color: #555; margin: 25px 0 10px; border-top: 1px solid #eee; padding-top: 15px; }
+    
+    .guarantee-box { background: #fff3cd; border: 1px solid #ffeeba; border-radius: 10px; padding: 12px; margin-top: 15px; color: #856404; }
+    .guarantee-box p { color: #856404; margin-bottom: 5px; font-weight: bold; }
+    .guarantee-box label { font-size: 13px; margin-bottom: 5px; display: block; color: #856404; font-weight: bold;}
+    .guarantee-box input, .guarantee-box textarea { font-size: 16px; color: #333; }
+    
+    .file-input-label { display: block; padding: 10px; background: #e8f0fe; color: #1a73e8; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 12px; font-size: 14px; font-weight: bold; border: 2px dashed #1a73e8;}
+    #o-image { display: none; }
+
+    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: #555; font-weight: bold; }
+    .detail-value { color: #333; }
+
+    /* ستايل المودال (النافذة المنبثقة) */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: white; padding: 25px 20px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .modal-content h3 { color: #e74c3c; margin-bottom: 15px; font-size: 20px;}
+    .modal-content .price-box { background: #fdf2e9; border: 1px solid #e67e22; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+    .modal-content .price-box span { font-size: 24px; font-weight: bold; color: #d35400; }
+
+    /* زرار الآدمن وزرار التثبيت */
+    #admin-btn { background: #333; color: #fff; display: none; margin-top: 20px; border: 2px solid #f1c40f; }
+    #install-app-btn { background: #f39c12; color: white; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ المودال (شاشة الدفع) ============ -->
+  <div id="payment-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>⚠️ تفعيل الحساب</h3>
+      <p>عشان إعلانك يظهر للمستأجرين، لازم تفعل حسابك بدفع اشتراك لمرة واحدة:</p>
+      
+      <div class="price-box">
+        <span>50 جنيه</span>
+      </div>
+      
+      <p>حوّل المبلغ على <strong>فودافون كاش</strong>:</p>
+      <h2 style="color: #333; margin-bottom: 10px; font-family: monospace; letter-spacing: 1px;">01007799186</h2>
+      
+      <p>بعد التحويل، ابعت صورة التحويل على واتساب الدعم عشان نفعّل الإعلان:</p>
+      <a href="https://wa.me/201007799186" target="_blank" class="btn btn-whatsapp" style="display:block; margin-bottom: 15px; padding: 12px;">💬 واتساب الدعم</a>
+      
+      <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+      
+      <p style="font-size: 13px; color: #666;">لو قمت بالتحويل، اضغط "تأكيد ونشر" وسيظهر إعلانك "قيد التفعيل" لحد ما نراجعه.</p>
+      
+      <button id="confirm-publish-btn" style="background:#27ae60;">تأكيد ونشر</button>
+      <button id="cancel-publish-btn" class="btn-secondary" style="background:#95a5a6;">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- ============ VIEW: تسجيل الدخول ============ -->
+  <div id="view-login" class="container view">
+    <h1>🏍️ فيتا | Vita</h1>
+    <p style="text-align:center;">أول منصة لإيجار الموتسيكلات في مصر</p>
+    <h2>تسجيل الدخول</h2>
+    <input type="email" id="login-email" placeholder="البريد الإلكتروني">
+    <input type="password" id="login-password" placeholder="كلمة المرور">
+    <p id="login-msg" class="error-msg"></p>
+    <button id="login-btn">تسجيل الدخول</button>
+    <button id="signup-btn" class="btn-secondary">حساب جديد</button>
+    
+    <button id="browse-guest-btn" style="background: #ecf0f1; color: #333; margin-top: 15px; border: 1px solid #bdc3c7;">👀 تصفح الإعلانات كزائر</button>
+    
+    <!-- زرار تثبيت التطبيق -->
+    <button id="install-app-btn">📲 تثبيت التطبيق على الموبايل</button>
+  </div>
+
+  <!-- ============ VIEW: اختيار الدور ============ -->
+  <div id="view-role" class="container view hidden">
+    <h1>🏍️ فيتا | Vita</h1>
+    <h2>أنت مين؟</h2>
+    <button id="choose-owner">🏍️ مالك موتسيكل</button>
+    <button id="choose-renter" class="btn-secondary">🧑‍💼 مستأجر</button>
+    <button id="logout-from-role" class="btn-danger" style="margin-top:20px;">تسجيل خروج</button>
+  </div>
+
+  <!-- ============ VIEW: المالك ============ -->
+  <div id="view-owner" class="container view hidden">
+    <div class="top-bar">
+      <h2>🏍️ لوحة المالك</h2>
+      <button onclick="logout()" style="background:#e74c3c;">خروج</button>
+    </div>
+
+    <h3>نشر موتسيكل للإيجار</h3>
+    <input type="text" id="o-owner-name" placeholder="اسمك (المالك)">
+    <input type="tel" id="o-contact-phone" placeholder="رقم التواصل (مطلوب)">
+    <input type="tel" id="o-whatsapp" placeholder="رقم واتساب (اختياري)">
+    <input type="text" id="o-moto-name" placeholder="اسم الموتسيكل (مثال: هوندا SH)">
+    <input type="text" id="o-plate" placeholder="رقم اللوحة (مثال: أ ب ج 1234)">
+    
+    <select id="o-gov">
+      <option value="">اختر المحافظة</option>
+      <option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option>
+      <option>القليوبية</option><option>الشرقية</option><option>الدقهلية</option>
+      <option>البحيرة</option><option>المنوفية</option><option>الغربية</option>
+      <option>كفر الشيخ</option><option>دمياط</option><option>بورسعيد</option>
+      <option>الإسماعيلية</option><option>السويس</option><option>شمال سيناء</option>
+      <option>جنوب سيناء</option><option>بني سويف</option><option>الفيوم</option>
+      <option>المنيا</option><option>أسيوط</option><option>سوهاج</option>
+      <option>قنا</option><option>الأقصر</option><option>أسوان</option>
+      <option>البحر الأحمر</option><option>الوادي الجديد</option><option>مطروح</option>
+    </select>
+
+    <select id="o-rental-type">
+      <option value="">نوع الإيجار</option>
+      <option value="daily">يومي</option>
+      <option value="weekly">أسبوعي</option>
+      <option value="monthly">شهري</option>
+    </select>
+    <input type="number" id="o-price" placeholder="سعر الإيجار بالجنيه">
+    
+    <label for="o-image" class="file-input-label">📸 اضغط لاختيار صورة الموتسيكل</label>
+    <input type="file" id="o-image" accept="image/*">
+
+    <div class="guarantee-box">
+      <p>شروط الضمان (المستأجر سيمضي إيصال أمانة):</p>
+      <label for="o-amana-value">قيمة إيصال الأمانة (سعر الموتسيكل بالجنيه):</label>
+      <input type="number" id="o-amana-value" placeholder="مثال: 15000" style="margin-bottom:10px; background:white;">
+      <textarea id="o-guarantees" placeholder="شروط إضافية (مثال: صورة البطاقة، رخصة قيادة...)" style="min-height:60px; background:white;"></textarea>
+    </div>
+    
+    <textarea id="o-desc" placeholder="وصف إضافي للموتسيكل (اختياري)" style="margin-top:10px;"></textarea>
+    
+    <p id="o-msg" class="success-msg"></p>
+    <button id="publish-btn">اعرض موتوسيكلي للإيجار</button>
+
+    <h3 class="section-title">إعلاناتي</h3>
+    <div id="my-listings"><p style="text-align:center; font-size:14px;">جاري التحميل...</p></div>
+
+    <button class="btn-secondary" onclick="showView('renter')" style="margin-top:20px;">شاهد كل الإعلانات</button>
+    
+    <button id="admin-btn" onclick="showView('admin')">🛠️ لوحة الإدارة (تظهر لك إنت بس)</button>
+  </div>
+
+  <!-- ============ VIEW: المستأجر (تصفح) ============ -->
+  <div id="view-renter" class="container view hidden">
+    <div class="top-bar">
+      <h2>🏍️ الإعلانات</h2>
+      <div>
+        <button id="logout-renter-btn" onclick="logout()" style="background:#e74c3c; display:none;">خروج</button>
+        <button id="login-renter-btn" onclick="showView('login')" style="background:#3498db; display:none;">تسجيل الدخول</button>
+      </div>
+    </div>
+    <select id="r-filter-gov">
+      <option value="">كل المحافظات</option>
+      <option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option>
+      <option>القليوبية</option><option>الشرقية</option><option>الدقهلية</option>
+      <option>البحيرة</option><option>المنوفية</option><option>الغربية</option>
+      <option>كفر الشيخ</option><option>دمياط</option><option>بورسعيد</option>
+      <option>الإسماعيلية</option><option>السويس</option><option>شمال سيناء</option>
+      <option>جنوب سيناء</option><option>بني سويف</option><option>الفيوم</option>
+      <option>المنيا</option><option>أسيوط</option><option>سوهاج</option>
+      <option>قنا</option><option>الأقصر</option><option>أسوان</option>
+      <option>البحر الأحمر</option><option>الوادي الجديد</option><option>مطروح</option>
+    </select>
+    <div id="listings-container"><p style="text-align:center;">جاري التحميل...</p></div>
+    <button id="back-to-owner" class="btn-secondary hidden" style="margin-top:20px;" onclick="showView('owner')">رجوع للوحة المالك</button>
+  </div>
+
+  <!-- ============ VIEW: لوحة الإدارة (للآدمن بس) ============ -->
+  <div id="view-admin" class="container view hidden">
+    <div class="top-bar">
+      <h2>🛠️ لوحة الإدارة</h2>
+      <button onclick="logout()" style="background:#e74c3c;">خروج</button>
+    </div>
+    <p style="text-align:center; color:#e74c3c; font-weight:bold; margin-bottom:15px;">الإعلانات اللي محتاجة تفعيل (بعد ما تتأكد من الدفع):</p>
+    
+    <div id="pending-listings-container">
+      <p style="text-align:center;">جاري التحميل...</p>
+    </div>
+    
+    <button class="btn-secondary" onclick="showView('owner')" style="margin-top:20px;">رجوع للوحة المالك</button>
+  </div>
+
+  <!-- ============ VIEW: تفاصيل الإعلان ============ -->
+  <div id="view-listing" class="container view hidden">
+    <div class="top-bar">
+      <h2>تفاصيل الإعلان</h2>
+      <button onclick="goBackFromListing()" style="background:#e74c3c;">رجوع</button>
+    </div>
+    <div id="listing-details"><p style="text-align:center;">جاري التحميل...</p></div>
+  </div>
+
+  <!-- ============ سكربتات Firebase ============ -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ============================================================
+    // دمج ملف الـ Manifest (تثبيت التطبيق) جوه الـ HTML
+    // ============================================================
+    const manifest = {
+      name: "فيتا | Vita",
+      short_name: "فيتا",
+      description: "أول منصة لإيجار الموتسيكلات في مصر",
+      start_url: "./index.html",
+      display: "standalone",
+      background_color: "#ffffff",
+      theme_color: "#667eea",
+      icons: [
+        {
+          src: "https://cdn-icons-png.flaticon.com/512/2830/2830284.png",
+          sizes: "192x192",
+          type: "image/png"
+        },
+        {
+          src: "https://cdn-icons-png.flaticon.com/512/2830/2830284.png",
+          sizes: "512x512",
+          type: "image/png"
+        }
+      ]
+    };
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+    document.head.appendChild(manifestLink);
+
+    // ============================================================
+    // 1) إعدادات Firebase و ImgBB
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBt1CDr7vuW9t-qKaGLORBTmZ3UEhWNvG4",
+      authDomain: "vita-app-55740.firebaseapp.com",
+      projectId: "vita-app-55740",
+      storageBucket: "vita-app-55740.firebasestorage.app",
+      messagingSenderId: "476789706378",
+      appId: "1:476789706378:web:bb7346a0805c131e816773"
+    };
+
+    // ⚠️ حط مفتاح ImgBB بتاعك هنا
+    const IMGBB_API_KEY = "PUT_YOUR_IMGBB_API_KEY_HERE";
+    const ADMIN_EMAIL = "ahmedabdelnabi205@gmail.com"; 
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ============================================================
+    // 2) المتغيرات العامة
+    // ============================================================
+    let currentUser = null;
+    let currentRole = null;
+    let hasNavigated = false;
+    let selectedListingId = null;
+    let cameFromOwner = false;
+
+    // ============================================================
+    // 3) التنقل بين الصفحات
+    // ============================================================
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      document.getElementById('view-' + name).classList.remove('hidden');
+      window.scrollTo(0, 0);
+
+      if (name === 'owner') {
+        if (!currentUser || currentRole !== 'owner') {
+          showView('login');
+          return;
+        }
+        loadMyListings();
+      }
+      
+      if (name === 'renter') {
+        document.getElementById('back-to-owner').classList.toggle('hidden', currentRole !== 'owner');
+        
+        if (currentUser) {
+          document.getElementById('logout-renter-btn').style.display = 'inline-block';
+          document.getElementById('login-renter-btn').style.display = 'none';
+        } else {
+          document.getElementById('logout-renter-btn').style.display = 'none';
+          document.getElementById('login-renter-btn').style.display = 'inline-block';
+        }
+
+        loadListings();
+      }
+
+      if (name === 'admin') {
+        loadAdminListings();
+      }
+    }
+
+    function logout() {
+      auth.signOut();
+    }
+
+    document.getElementById('browse-guest-btn').addEventListener('click', () => {
+      showView('renter');
+    });
+
+    // ============================================================
+    // 4) مراقبة حالة الدخول
+    // ============================================================
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        currentUser = null;
+        currentRole = null;
+        document.getElementById('admin-btn').style.display = 'none';
+        
+        if (hasNavigated) {
+           showView('login');
+           hasNavigated = false;
+        }
+        return;
+      }
+      
+      currentUser = user;
+      
+      if (currentUser.email === ADMIN_EMAIL) {
+        document.getElementById('admin-btn').style.display = 'block';
+      } else {
+        document.getElementById('admin-btn').style.display = 'none';
+      }
+
+      try {
+        const snap = await db.collection('profiles').doc(user.uid).get();
+        currentRole = snap.exists ? snap.data().role : null;
+      } catch (e) {
+        currentRole = null;
+      }
+      
+      if (!hasNavigated) {
+        hasNavigated = true;
+        
+        const pendingListingId = localStorage.getItem('pendingListingId');
+        if (pendingListingId && currentRole === 'renter') {
+          localStorage.removeItem('pendingListingId');
+          openListing(pendingListingId);
+          return;
+        }
+
+        if (!currentRole) showView('role');
+        else showView(currentRole === 'owner' ? 'owner' : 'renter');
+      }
+    });
+
+    // ============================================================
+    // 5) تسجيل الدخول / حساب جديد
+    // ============================================================
+    const loginMsg = document.getElementById('login-msg');
+
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      loginMsg.textContent = '';
+      if (!email || !password) { loginMsg.textContent = 'اكتب الإيميل والباسورد'; return; }
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (e) {
+        loginMsg.textContent = 'خطأ: ' + (e.message || 'بيانات غير صحيحة');
+      }
+    });
+
+    document.getElementById('signup-btn').addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      loginMsg.textContent = '';
+      if (!email || !password) { loginMsg.textContent = 'اكتب الإيميل والباسورد'; return; }
+      if (password.length < 6) { loginMsg.textContent = 'الباسورد 6 حروف على الأقل'; return; }
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+      } catch (e) {
+        loginMsg.textContent = 'خطأ: ' + (e.message || 'حاول تاني');
+      }
+    });
+
+    // ============================================================
+    // 6) اختيار الدور
+    // ============================================================
+    document.getElementById('choose-owner').addEventListener('click', () => setRole('owner'));
+    document.getElementById('choose-renter').addEventListener('click', () => setRole('renter'));
+    document.getElementById('logout-from-role').addEventListener('click', () => logout());
+
+    async function setRole(role) {
+      if (!currentUser) return;
+      await db.collection('profiles').doc(currentUser.uid).set({
+        role: role,
+        email: currentUser.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      currentRole = role;
+      showView(role === 'owner' ? 'owner' : 'renter');
+    }
+
+    // ============================================================
+    // 7) دالة رفع الصورة لـ ImgBB
+    // ============================================================
+    async function uploadImage(file) {
+      if (IMGBB_API_KEY === "PUT_YOUR_IMGBB_API_KEY_HERE") {
+        throw new Error("مفتاح ImgBB غير موضوع في الكود!");
+      }
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error('فشل رفع الصورة على ImgBB');
+      return data.data.url;
+    }
+
+    // ============================================================
+    // 8) المالك: نشر إعلان
+    // ============================================================
+    let tempListingData = null;
+
+    document.getElementById('publish-btn').addEventListener('click', async () => {
+      const msg = document.getElementById('o-msg');
+      msg.textContent = '';
+      msg.style.color = '#27ae60';
+
+      if (!currentUser || currentRole !== 'owner') {
+        msg.style.color = '#e74c3c';
+        msg.textContent = 'لازم تكون مسجل كمالك';
+        return;
+      }
+
+      const ownerName = document.getElementById('o-owner-name').value.trim();
+      const contactPhone = document.getElementById('o-contact-phone').value.trim();
+      const whatsapp = document.getElementById('o-whatsapp').value.trim();
+      const motoName = document.getElementById('o-moto-name').value.trim();
+      const plate = document.getElementById('o-plate').value.trim();
+      const gov = document.getElementById('o-gov').value;
+      const rentalType = document.getElementById('o-rental-type').value;
+      const price = Number(document.getElementById('o-price').value);
+      const amanaValue = Number(document.getElementById('o-amana-value').value) || 0;
+      const guarantees = document.getElementById('o-guarantees').value.trim();
+      const desc = document.getElementById('o-desc').value.trim();
+      const imageFile = document.getElementById('o-image').files[0];
+
+      if (!ownerName || !contactPhone || !motoName || !gov || !rentalType || !price || !amanaValue) {
+        msg.style.color = '#e74c3c';
+        msg.textContent = 'اكمل البيانات الأساسية';
+        return;
+      }
+
+      tempListingData = {
+        ownerName, contactPhone, whatsapp, motoName, plate, gov, rentalType, price, amanaValue, guarantees, desc, imageFile
+      };
+
+      document.getElementById('payment-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('confirm-publish-btn').addEventListener('click', async () => {
+      document.getElementById('payment-modal').classList.add('hidden');
+      
+      if (!tempListingData) return;
+
+      const btn = document.getElementById('publish-btn');
+      const msg = document.getElementById('o-msg');
+      
+      btn.disabled = true;
+      btn.textContent = 'جاري النشر...';
+
+      try {
+        let imageUrl = "";
+        if (tempListingData.imageFile) {
+          btn.textContent = 'جاري رفع الصورة...';
+          imageUrl = await uploadImage(tempListingData.imageFile);
+        }
+
+        btn.textContent = 'جاري حفظ الإعلان...';
+
+        await db.collection('listings').add({
+          ownerId: currentUser.uid,
+          ownerEmail: currentUser.email,
+          ownerName: tempListingData.ownerName,
+          contactPhone: tempListingData.contactPhone,
+          whatsapp: tempListingData.whatsapp,
+          motoName: tempListingData.motoName,
+          plate: tempListingData.plate,
+          governorate: tempListingData.gov,
+          rentalType: tempListingData.rentalType,
+          price: tempListingData.price,
+          amanaValue: tempListingData.amanaValue,
+          guarantees: tempListingData.guarantees,
+          description: tempListingData.desc,
+          imageUrl: imageUrl,
+          status: 'pending', 
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        msg.textContent = '✅ تم استلام إعلانك! جاري تفعيله بعد مراجعة الدفع.';
+        
+        document.getElementById('o-owner-name').value = '';
+        document.getElementById('o-contact-phone').value = '';
+        document.getElementById('o-whatsapp').value = '';
+        document.getElementById('o-moto-name').value = '';
+        document.getElementById('o-plate').value = '';
+        document.getElementById('o-price').value = '';
+        document.getElementById('o-amana-value').value = '';
+        document.getElementById('o-guarantees').value = '';
+        document.getElementById('o-desc').value = '';
+        document.getElementById('o-image').value = '';
+        tempListingData = null;
+        
+        loadMyListings();
+      } catch (e) {
+        msg.style.color = '#e74c3c';
+        msg.textContent = 'خطأ: ' + e.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'اعرض موتوسيكلي للإيجار';
+      }
+    });
+
+    document.getElementById('cancel-publish-btn').addEventListener('click', () => {
+      document.getElementById('payment-modal').classList.add('hidden');
+      tempListingData = null;
+    });
+
+    // ============================================================
+    // 9) المالك: إعلاناتي
+    // ============================================================
+    async function loadMyListings() {
+      if (!currentUser) return;
+      const container = document.getElementById('my-listings');
+      container.innerHTML = '<p style="text-align:center; font-size:14px;">جاري التحميل...</p>';
+      try {
+        const snap = await db.collection('listings').where('ownerId', '==', currentUser.uid).get();
+        let listings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        listings.sort((a, b) => {
+          const ta = a.createdAt ? a.createdAt.seconds : 0;
+          const tb = b.createdAt ? b.createdAt.seconds : 0;
+          return tb - ta;
+        });
+
+        if (listings.length === 0) {
+          container.innerHTML = '<p style="text-align:center; font-size:14px;">لم تنشر أي إعلان بعد</p>';
+          return;
+        }
+
+        container.innerHTML = listings.map(l => {
+          const statusBadge = l.status === 'active' 
+            ? '<span style="background:#27ae60; color:white; padding:3px 8px; border-radius:5px; font-size:11px;">نشط</span>'
+            : '<span style="background:#e67e22; color:white; padding:3px 8px; border-radius:5px; font-size:11px;">قيد التفعيل</span>';
+
+          return `
+            <div class="card" style="padding:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <h3 style="font-size:15px; margin:0;">${l.motoName}</h3>
+                ${statusBadge}
+              </div>
+              <p style="font-size:13px; margin-bottom:8px;">📍 ${l.governorate} • 💰 ${l.price} ج / ${rentalTypeAr(l.rentalType)}</p>
+              <button class="btn-danger" style="padding:6px 12px; font-size:12px; width:auto;" onclick="deleteListing('${l.id}')">حذف</button>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">خطأ: ' + e.message + '</p>';
+      }
+    }
+
+    async function deleteListing(id) {
+      if (!confirm('متأكد إنك عايز تحذف الإعلان؟')) return;
+      try {
+        await db.collection('listings').doc(id).delete();
+        loadMyListings();
+        if(currentUser.email === ADMIN_EMAIL) loadAdminListings();
+      } catch (e) {
+        alert('خطأ: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // 10) المستأجر: تصفح الإعلانات
+    // ============================================================
+    function rentalTypeAr(t) {
+      return t === 'daily' ? 'يومي' : t === 'weekly' ? 'أسبوعي' : 'شهري';
+    }
+
+    async function loadListings() {
+      const container = document.getElementById('listings-container');
+      const gov = document.getElementById('r-filter-gov').value;
+      container.innerHTML = '<p style="text-align:center;">جاري التحميل...</p>';
+
+      try {
+        const snap = await db.collection('listings').where('status', '==', 'active').get();
+        let listings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (gov) listings = listings.filter(l => l.governorate === gov);
+        listings.sort((a, b) => {
+          const ta = a.createdAt ? a.createdAt.seconds : 0;
+          const tb = b.createdAt ? b.createdAt.seconds : 0;
+          return tb - ta;
+        });
+
+        if (listings.length === 0) {
+          container.innerHTML = '<p style="text-align:center;">لا توجد إعلانات حالياً</p>';
+          return;
+        }
+
+        container.innerHTML = listings.map(l => `
+          <div class="card">
+            ${l.imageUrl ? `<img src="${l.imageUrl}" alt="${l.motoName}">` : ''}
+            <h3>${l.motoName || 'موتسيكل'}</h3>
+            <p>📍 ${l.governorate}</p>
+            <p class="price-tag">💰 ${l.price} جنيه / ${rentalTypeAr(l.rentalType)}</p>
+            <a onclick="openListing('${l.id}')">التفاصيل والتواصل</a>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">خطأ: ' + e.message + '</p>';
+      }
+    }
+
+    document.getElementById('r-filter-gov').addEventListener('change', loadListings);
+
+    // ============================================================
+    // 11) تفاصيل الإعلان
+    // ============================================================
+    async function openListing(id) {
+      selectedListingId = id;
+      cameFromOwner = currentRole === 'owner';
+      showView('listing');
+      const container = document.getElementById('listing-details');
+      container.innerHTML = '<p style="text-align:center;">جاري التحميل...</p>';
+      try {
+        const doc = await db.collection('listings').doc(id).get();
+        if (!doc.exists) {
+          container.innerHTML = '<p style="color:#e74c3c; text-align:center;">الإعلان غير موجود</p>';
+          return;
+        }
+        const l = doc.data();
+        
+        const safeOwnerName = l.ownerName || 'مالك';
+        const safeAmanaValue = l.amanaValue ? `${l.amanaValue} جنيه` : 'غير محدد (اتفق مع المالك)';
+        const safePlate = l.plate || 'غير محدد';
+        const safeDesc = l.description || 'لا يوجد وصف إضافي';
+        const safeGuarantees = l.guarantees ? `- شروط إضافية: ${l.guarantees}` : '';
+
+        let contactBtns = '';
+        
+        if (!currentUser) {
+          contactBtns = `
+            <div style="background:#fdebd0; border: 1px solid #e67e22; padding:15px; border-radius:10px; margin-top:15px; text-align:center;">
+              <p style="color:#d35400; font-weight:bold; margin-bottom:10px;">🔒 أرقام التواصل مخفية</p>
+              <p style="color:#333; font-size:14px; margin-bottom:10px;">سجل دخولك كمستأجر عشان تشوف رقم المالك وتتواصل معاه.</p>
+              <button onclick="requestLoginForContact('${id}')" class="btn" style="background:#e74c3c; padding:12px; font-size:15px; width:100%; border-radius:8px; border:none;">تسجيل الدخول والتواصل</button>
+            </div>
+          `;
+        } else {
+          if (l.contactPhone) {
+            contactBtns += `<a href="tel:${l.contactPhone}" class="btn btn-call" style="display:block; text-align:center; padding:14px; font-size:16px; margin-top:10px;">📞 اتصل بالمالك (${l.contactPhone})</a>`;
+          }
+          if (l.whatsapp && l.whatsapp.trim() !== "") {
+            const waNumber = formatWhatsApp(l.whatsapp);
+            const waMessage = encodeURIComponent(`مرحباً ${safeOwnerName}، شفت إعلان "${l.motoName}" على تطبيق فيتا وأنا مهتم بالإيجار.`);
+            const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
+            contactBtns += `<a href="${waLink}" target="_blank" class="btn btn-whatsapp" style="display:block; text-align:center; padding:14px; font-size:16px; margin-top:10px;">💬 تواصل عبر واتساب</a>`;
+          }
+        }
+
+        container.innerHTML = `
+          ${l.imageUrl ? `<img src="${l.imageUrl}" style="width:100%;border-radius:15px;margin-bottom:15px;">` : ''}
+          <h2 style="margin-bottom:20px;">${l.motoName}</h2>
+          
+          <div class="card">
+            <div class="detail-row">
+              <span class="detail-label">👤 المالك:</span>
+              <span class="detail-value">${safeOwnerName}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">📍 المحافظة:</span>
+              <span class="detail-value">${l.governorate}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">🔢 رقم اللوحة:</span>
+              <span class="detail-value">${safePlate}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">🔄 نوع الإيجار:</span>
+              <span class="detail-value" style="color:#e67e22; font-weight:bold;">${rentalTypeAr(l.rentalType)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">💰 السعر:</span>
+              <span class="detail-value price-tag">${l.price} جنيه</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">📝 وصف:</span>
+              <span class="detail-value">${safeDesc}</span>
+            </div>
+          </div>
+          
+          <div class="guarantee-box" style="background: #fdebd0; border: 2px solid #e67e22;">
+            <p style="color: #d35400; font-size: 15px;">⚠️ تنبيه هام (شروط الضمان):</p>
+            <p style="color: #333; font-weight: bold; font-size: 16px;">
+              أنت ستمضي على <span style="color: #e74c3c;">إيصال أمانة</span> بقيمة 
+              <span style="color: #e74c3c;">${safeAmanaValue}</span>.
+            </p>
+            ${safeGuarantees ? `<p style="color: #333; font-weight: normal; margin-top:5px;">${safeGuarantees}</p>` : ''}
+          </div>
+          
+          <p style="font-size:13px; text-align:center; color:#999; margin-top:15px;">الاتفاق النهائي وتوقيع إيصال الأمانة بيتم بينك وبين المالك.</p>
+          ${contactBtns}
+        `;
+      } catch (e) {
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">خطأ: ' + e.message + '</p>';
+      }
+    }
+
+    function requestLoginForContact(id) {
+      localStorage.setItem('pendingListingId', id);
+      showView('login');
+    }
+
+    function formatWhatsApp(phone) {
+      let cleaned = phone.replace(/\D/g, '');
+      if (cleaned.startsWith('0')) cleaned = '20' + cleaned.substring(1);
+      if (!cleaned.startsWith('20')) cleaned = '20' + cleaned;
+      return cleaned;
+    }
+
+    function goBackFromListing() {
+      showView(cameFromOwner ? 'owner' : 'renter');
+    }
+
+    // ============================================================
+    // 12) لوحة الإدارة: تفعيل الإعلانات
+    // ============================================================
+    async function loadAdminListings() {
+      const container = document.getElementById('pending-listings-container');
+      container.innerHTML = '<p style="text-align:center;">جاري التحميل...</p>';
+
+      try {
+        const snap = await db.collection('listings').where('status', '==', 'pending').get();
+        let listings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        if (listings.length === 0) {
+          container.innerHTML = '<p style="text-align:center; color:#27ae60; font-weight:bold;">لا توجد إعلانات معلقة حالياً.</p>';
+          return;
+        }
+
+        container.innerHTML = listings.map(l => `
+          <div class="card" style="padding:12px; border-right: 5px solid #e67e22;">
+            <h3 style="font-size:15px; margin-bottom:6px;">${l.motoName}</h3>
+            <p style="font-size:13px; margin-bottom:4px;">👤 <strong>المالك:</strong> ${l.ownerName}</p>
+            <p style="font-size:13px; margin-bottom:4px;">📞 <strong>موبايل:</strong> ${l.contactPhone}</p>
+            <p style="font-size:13px; margin-bottom:8px;">📍 ${l.governorate} • 💰 ${l.price} ج</p>
+            <button class="btn-success" style="padding:8px 12px; font-size:13px; font-weight:bold;" onclick="approveListing('${l.id}')">✅ تفعيل الإعلان</button>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">خطأ: ' + e.message + '</p>';
+      }
+    }
+
+    async function approveListing(id) {
+      if (!confirm('هل تأكدت من استلام الـ 50 جنيه؟ سيتم تفعيل الإعلان فوراً.')) return;
+      try {
+        await db.collection('listings').doc(id).update({ status: 'active' });
+        alert('✅ تم تفعيل الإعلان بنجاح!');
+        loadAdminListings();
+      } catch (e) {
+        alert('خطأ: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // 13) كود تثبيت التطبيق على الموبايل (PWA)
+    // ============================================================
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-app-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+      } else {
+        alert('لو معاك أندرويد: افتح قائمة المتصفح (3 نقط) واختار "تثبيت التطبيق".\nلو معاك آيفون: اضغط على زرار المشاركة (Share) واختار "إضافة إلى الشاشة الرئيسية".');
+      }
+    });
+  </script>
+</body>
+</html>
