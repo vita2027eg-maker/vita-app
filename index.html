@@ -53,21 +53,18 @@
     .detail-label { color: #555; font-weight: bold; }
     .detail-value { color: #333; }
 
-    /* ستايل المودال (النافذة المنبثقة) */
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
     .modal-content { background: white; padding: 25px 20px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .modal-content h3 { color: #e74c3c; margin-bottom: 15px; font-size: 20px;}
     .modal-content .price-box { background: #fdf2e9; border: 1px solid #e67e22; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
     .modal-content .price-box span { font-size: 24px; font-weight: bold; color: #d35400; }
 
-    /* زرار الآدمن وزرار التثبيت */
     #admin-btn { background: #333; color: #fff; display: none; margin-top: 20px; border: 2px solid #f1c40f; }
     #install-app-btn { background: #f39c12; color: white; margin-top: 10px; display: none; }
   </style>
 </head>
 <body>
 
-  <!-- ============ المودال (شاشة الدفع) ============ -->
   <div id="payment-modal" class="modal hidden">
     <div class="modal-content">
       <h3>⚠️ تفعيل الحساب</h3>
@@ -92,7 +89,6 @@
     </div>
   </div>
 
-  <!-- ============ VIEW: تسجيل الدخول ============ -->
   <div id="view-login" class="container view">
     <h1>🏍️ فيتا | Vita</h1>
     <p style="text-align:center;">أول منصة لإيجار الموتسيكلات في مصر</p>
@@ -105,11 +101,9 @@
     
     <button id="browse-guest-btn" style="background: #ecf0f1; color: #333; margin-top: 15px; border: 1px solid #bdc3c7;">👀 تصفح الإعلانات كزائر</button>
     
-    <!-- زرار تثبيت التطبيق -->
     <button id="install-app-btn">📲 تثبيت التطبيق على الموبايل</button>
   </div>
 
-  <!-- ============ VIEW: اختيار الدور ============ -->
   <div id="view-role" class="container view hidden">
     <h1>🏍️ فيتا | Vita</h1>
     <h2>أنت مين؟</h2>
@@ -118,7 +112,6 @@
     <button id="logout-from-role" class="btn-danger" style="margin-top:20px;">تسجيل خروج</button>
   </div>
 
-  <!-- ============ VIEW: المالك ============ -->
   <div id="view-owner" class="container view hidden">
     <div class="top-bar">
       <h2>🏍️ لوحة المالك</h2>
@@ -176,7 +169,6 @@
     <button id="admin-btn" onclick="showView('admin')">🛠️ لوحة الإدارة (تظهر لك إنت بس)</button>
   </div>
 
-  <!-- ============ VIEW: المستأجر (تصفح) ============ -->
   <div id="view-renter" class="container view hidden">
     <div class="top-bar">
       <h2>🏍️ الإعلانات</h2>
@@ -201,7 +193,6 @@
     <button id="back-to-owner" class="btn-secondary hidden" style="margin-top:20px;" onclick="showView('owner')">رجوع للوحة المالك</button>
   </div>
 
-  <!-- ============ VIEW: لوحة الإدارة (للآدمن بس) ============ -->
   <div id="view-admin" class="container view hidden">
     <div class="top-bar">
       <h2>🛠️ لوحة الإدارة</h2>
@@ -216,7 +207,6 @@
     <button class="btn-secondary" onclick="showView('owner')" style="margin-top:20px;">رجوع للوحة المالك</button>
   </div>
 
-  <!-- ============ VIEW: تفاصيل الإعلان ============ -->
   <div id="view-listing" class="container view hidden">
     <div class="top-bar">
       <h2>تفاصيل الإعلان</h2>
@@ -225,15 +215,11 @@
     <div id="listing-details"><p style="text-align:center;">جاري التحميل...</p></div>
   </div>
 
-  <!-- ============ سكربتات Firebase ============ -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // ============================================================
-    // دمج ملف الـ Manifest (تثبيت التطبيق) جوه الـ HTML
-    // ============================================================
     const manifest = {
       name: "فيتا | Vita",
       short_name: "فيتا",
@@ -260,9 +246,6 @@
     manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
     document.head.appendChild(manifestLink);
 
-    // ============================================================
-    // 1) إعدادات Firebase و ImgBB
-    // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyBt1CDr7vuW9t-qKaGLORBTmZ3UEhWNvG4",
       authDomain: "vita-app-55740.firebaseapp.com",
@@ -272,26 +255,19 @@
       appId: "1:476789706378:web:bb7346a0805c131e816773"
     };
 
-    // ⚠️ حط مفتاح ImgBB بتاعك هنا
-    const IMGBB_API_KEY = "PUT_YOUR_IMGBB_API_KEY_HERE";
+    const IMGBB_API_KEY = "a61dfc81059f5006595c0482a5cf8ff6";
     const ADMIN_EMAIL = "ahmedabdelnabi205@gmail.com"; 
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ============================================================
-    // 2) المتغيرات العامة
-    // ============================================================
     let currentUser = null;
     let currentRole = null;
     let hasNavigated = false;
     let selectedListingId = null;
     let cameFromOwner = false;
 
-    // ============================================================
-    // 3) التنقل بين الصفحات
-    // ============================================================
     function showView(name) {
       document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
       document.getElementById('view-' + name).classList.remove('hidden');
@@ -332,9 +308,6 @@
       showView('renter');
     });
 
-    // ============================================================
-    // 4) مراقبة حالة الدخول
-    // ============================================================
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         currentUser = null;
@@ -378,9 +351,6 @@
       }
     });
 
-    // ============================================================
-    // 5) تسجيل الدخول / حساب جديد
-    // ============================================================
     const loginMsg = document.getElementById('login-msg');
 
     document.getElementById('login-btn').addEventListener('click', async () => {
@@ -408,9 +378,6 @@
       }
     });
 
-    // ============================================================
-    // 6) اختيار الدور
-    // ============================================================
     document.getElementById('choose-owner').addEventListener('click', () => setRole('owner'));
     document.getElementById('choose-renter').addEventListener('click', () => setRole('renter'));
     document.getElementById('logout-from-role').addEventListener('click', () => logout());
@@ -426,9 +393,6 @@
       showView(role === 'owner' ? 'owner' : 'renter');
     }
 
-    // ============================================================
-    // 7) دالة رفع الصورة لـ ImgBB
-    // ============================================================
     async function uploadImage(file) {
       if (IMGBB_API_KEY === "PUT_YOUR_IMGBB_API_KEY_HERE") {
         throw new Error("مفتاح ImgBB غير موضوع في الكود!");
@@ -444,9 +408,6 @@
       return data.data.url;
     }
 
-    // ============================================================
-    // 8) المالك: نشر إعلان
-    // ============================================================
     let tempListingData = null;
 
     document.getElementById('publish-btn').addEventListener('click', async () => {
@@ -554,9 +515,6 @@
       tempListingData = null;
     });
 
-    // ============================================================
-    // 9) المالك: إعلاناتي
-    // ============================================================
     async function loadMyListings() {
       if (!currentUser) return;
       const container = document.getElementById('my-listings');
@@ -607,9 +565,6 @@
       }
     }
 
-    // ============================================================
-    // 10) المستأجر: تصفح الإعلانات
-    // ============================================================
     function rentalTypeAr(t) {
       return t === 'daily' ? 'يومي' : t === 'weekly' ? 'أسبوعي' : 'شهري';
     }
@@ -650,9 +605,6 @@
 
     document.getElementById('r-filter-gov').addEventListener('change', loadListings);
 
-    // ============================================================
-    // 11) تفاصيل الإعلان
-    // ============================================================
     async function openListing(id) {
       selectedListingId = id;
       cameFromOwner = currentRole === 'owner';
@@ -759,9 +711,6 @@
       showView(cameFromOwner ? 'owner' : 'renter');
     }
 
-    // ============================================================
-    // 12) لوحة الإدارة: تفعيل الإعلانات
-    // ============================================================
     async function loadAdminListings() {
       const container = document.getElementById('pending-listings-container');
       container.innerHTML = '<p style="text-align:center;">جاري التحميل...</p>';
@@ -800,9 +749,6 @@
       }
     }
 
-    // ============================================================
-    // 13) كود تثبيت التطبيق على الموبايل (PWA)
-    // ============================================================
     let deferredPrompt;
     const installBtn = document.getElementById('install-app-btn');
 
